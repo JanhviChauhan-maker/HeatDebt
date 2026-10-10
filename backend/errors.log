@@ -1,0 +1,46 @@
+......FF......................................                           [100%]
+================================== FAILURES ===================================
+________________ test_forecast_monitor_triggers_on_first_pull _________________
+
+test_site = Site(name='pytest_monitor_site', latitude=34.05, longitude=-118.24, timezone='America/Los_Angeles', operating_window_start='06:00', operating_window_end='18:00')
+
+    def test_forecast_monitor_triggers_on_first_pull(test_site):
+        # Tests that a site establishes a baseline snapshot without blowing up.
+        res = asyncio.run(refresh_site_forecast(test_site))
+        assert res.get("status") in ["success", "error"]  # Network may be down
+        if res.get("status") == "success":
+            # Check SQLite db for snapshot
+            snapshot = asyncio.run(get_latest_snapshot(test_site.name))
+>           assert snapshot is not None
+E           assert None is not None
+
+app\tests\test_forecast_monitor.py:27: AssertionError
+---------------------------- Captured stdout call -----------------------------
+Snapshot Persistence Exception Trapped: 'str' object has no attribute 'utc'
+---------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "D:\HEATDEBT\backend\app\services\database.py", line 126, in _insert_forecast_snapshot
+    now = datetime.now(timezone.utc).isoformat()
+                       ^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'utc'
+__________________________ test_workload_thresholds ___________________________
+
+    def test_workload_thresholds():
+        from app.api.routes import get_demo_policy
+        policy = get_demo_policy()
+        blocks = _check_workload_thresholds(27.0, policy)
+>       assert len(blocks) == 0
+E       AssertionError: assert 1 == 0
+E        +  where 1 = len(['VERY_HEAVY'])
+
+app\tests\test_forecast_monitor.py:34: AssertionError
+============================== warnings summary ===============================
+venv\Lib\site-packages\fastapi\testclient.py:1
+  D:\HEATDEBT\backend\venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED app/tests/test_forecast_monitor.py::test_forecast_monitor_triggers_on_first_pull
+FAILED app/tests/test_forecast_monitor.py::test_workload_thresholds - Asserti...
+2 failed, 44 passed, 1 warning in 1.51s
