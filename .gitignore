@@ -11,5 +11,7 @@ dist/
 *.db
 *.sqlite
 *.sqlite3
-pytest_out*.txt
-tester_out*.txt
+*.log
+*.txt
+!requirements.txt
+!CMakeLists.txt

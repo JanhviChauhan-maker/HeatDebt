@@ -1,5 +1,0 @@
-﻿
-> frontend@0.0.0 build
-> tsc -b && vite build
-
-src/pages/WhatIfPlanner.tsx(4,1): error TS6133: 'EvaluationResult' is declared but its value is never read.
